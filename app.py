@@ -35,7 +35,7 @@ class requests:
                 if dt < interval:
                     sums[interval] += _amount
                     if sums[interval] + new_amount > limit:
-                        return f'{interval}/{limit}'
+                        return f'{limit}/{interval}'
 
 
 @app.route('/request/<int:amount>')
