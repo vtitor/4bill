@@ -28,6 +28,8 @@ class requests:
     @classmethod
     def verify(cls, new_amount):
         cls.purge()
+        for interval in filter(lambda i: new_amount > limits[i], limits):
+            return f'{limits[interval]}/{interval}'
         sums, now = {interval: 0 for interval in limits}, time.time()
         for _amount, _time in cls._storage:
             dt = now - _time
