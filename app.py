@@ -23,6 +23,7 @@ class requests:
         for i, (_, _time) in enumerate(cls._storage):
             if _time >= actual_time:
                 cls._storage = cls._storage[i:]
+                return
 
     @classmethod
     def verify(cls, new_amount):
