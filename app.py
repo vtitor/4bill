@@ -1,3 +1,4 @@
+import threading
 import time
 
 from flask import Flask, jsonify
@@ -5,7 +6,7 @@ from flask import Flask, jsonify
 from config import AMOUNT_LIMITS_CONFIG
 
 app = Flask(__name__)
-
+lock = threading.Lock()
 limits = dict(sorted(AMOUNT_LIMITS_CONFIG.items()))
 max_limit = max(AMOUNT_LIMITS_CONFIG)
 
@@ -42,10 +43,11 @@ class requests:
 
 @app.route('/request/<int:amount>')
 def request(amount):
-    limit = requests.verify(amount)
-    if limit:
-        result = {'error': f'amount limit exceeded ({limit}sec)'}
-    else:
-        result = {'result': 'OK'}
-        requests.register(amount)
+    with lock:
+        limit = requests.verify(amount)
+        if limit:
+            result = {'error': f'amount limit exceeded ({limit}sec)'}
+        else:
+            result = {'result': 'OK'}
+            requests.register(amount)
     return jsonify(result)
